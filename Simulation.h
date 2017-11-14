@@ -8,8 +8,9 @@
 #include "Read_Elf.h"
 
 //#define DEBUG
-//#define DEBUG_REG
+#define DEBUG_REG
 #define DEBUG_INST
+#define DEBUG_MEM
 
 #define ALU_ADD 100
 #define ALU_SUB 1
@@ -53,6 +54,9 @@
 #define ALU_ADDW 39
 #define ALU_MULW 40
 #define ALU_DIVW 41
+#define ALU_SLLIW 42
+#define ALU_SRLIW 43
+#define ALU_SRAIW 44
 
 
 #define OP_JAL 111

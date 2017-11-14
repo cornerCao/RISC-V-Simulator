@@ -147,6 +147,15 @@ void printinst(int pc,int ALUop,int rs1,int rs2,int rd,long long imm){
 		case ALU_DIVW:
 			printf("divw ");
 			break;
+		case ALU_SRAIW:
+			printf("sraiw ");
+			break;
+		case ALU_SLLIW:
+			printf("slliw ");
+			break;
+		case ALU_SRLIW:
+			printf("srliw ");
+			break;
 		default:
 			printf("error alu ");
 	}
@@ -228,6 +237,16 @@ void help()
 	//printf("Hope you will love it.\n");
 
 }
+void print_mem(){
+	int i = 0;
+	for(i  = 0;i<MAX;i+=4){
+		unsigned int mem = 0;
+		memcpy(&mem,&memory[i],4);
+		if(mem != 0){
+			printf("memory %8x : %8x\n",i,mem);
+		}
+	}
+}
 int main(int argc, char *argv[])
 {
 	//参数不够则返回
@@ -237,6 +256,7 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 	memset(reg,0,sizeof(reg));
+	memset(memory,0,sizeof(memory));
 		char *file_name = argv[1];
 		//printf("name is %s,len is %d\n",file_name,strlen(file_name));
 		/*char pre_addr[3] = "./";
@@ -275,7 +295,9 @@ int main(int argc, char *argv[])
 
 
 	simulate();
-
+	#ifdef DEBUG_MEM
+	print_mem();
+	#endif
 	cout <<"simulate over!"<<endl;
 
 	return 0;
@@ -468,6 +490,21 @@ void ID()
     			EXTsrc = 12;
     			ALUop = ALU_ADDIW;
     		}
+    		else if(fuc3 == 1){
+    			ALUop = ALU_SLLIW;
+    			EXTop = 1;
+    			EXTsrc = 12;
+    		}
+    		else if(fuc3 == 5&&fuc7==0){
+    			ALUop = ALU_SRLIW;
+    			EXTop = 1;
+    			EXTsrc = 12;
+    		}
+    		else if(fuc3 == 5 && fuc7==32){
+    			ALUop = ALU_SRAIW;
+    			EXTop = 1;
+    			EXTsrc = 12;
+    		}
     	}
     	else if (OP == OP_I4&&fuc3==0){
     		RegWrite = 1;
@@ -632,6 +669,9 @@ void EX()
 	case ALU_SLL:
 		ALUout = reg[Rs1] << (unsigned int)reg[Rs2];
 		break;
+	case ALU_SLLIW:
+		ALUout = reg[Rs1] << (unsigned int)Imm;
+		break;
 	case ALU_SLT:
 		ALUout = ((long long)reg[Rs1]<(long long)reg[Rs2])?1:0;
 		break;
@@ -677,7 +717,13 @@ void EX()
 	case ALU_SRLI:
 		ALUout = (unsigned long long)reg[Rs1] >> Imm;
 		break;
+	case ALU_SRLIW:
+		ALUout = (unsigned long long)reg[Rs1] >> Imm;
+		break;
 	case ALU_SRAI:
+		ALUout = (long long)reg[Rs1]>>Imm;
+		break;
+	case ALU_SRAIW:
 		ALUout = (long long)reg[Rs1]>>Imm;
 		break;
 	case ALU_ORI:
@@ -882,10 +928,11 @@ void WB()
 	if(MemtoReg){
 		printf("write reg %d with Memory, content is %llx\n",Reg_Dst,Mem_read);
 	}
-	//printf("\n");
+	printf("\n");
 	#endif
 	#ifdef DEBUG_REG
 	printreg();
+	printf("\n");
 	#endif
 	//write reg
 }
