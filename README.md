@@ -1,4 +1,4 @@
-# RICS-V-Simulator
+# RISC-V-Simulator
 RISC-V Simulator using pipeline
 
 ISA lab 2.1 -- single simulator
