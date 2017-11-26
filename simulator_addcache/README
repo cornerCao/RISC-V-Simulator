@@ -1,0 +1,5 @@
+与lab2联调
+模拟真实处理器和cache
+通过make编译运行
+./simulator + 文件名即可运行文件
+可以输出指令、寄存器、流水线过程、cache的miss和hit情况、内存情况等。
